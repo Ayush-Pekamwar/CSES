@@ -4,8 +4,6 @@ using namespace std;
 const ll MOD = 1e9 + 7;
 
 // CUSTOM HASH
-// unordered_map<int, int, custom_hash> mp;
-// unordered_set<int, custom_hash> st;
 struct custom_hash {
     static uint64_t splitmix64(uint64_t x) {
         x += 0x9e3779b97f4a7c15;
@@ -21,29 +19,31 @@ struct custom_hash {
 };
 
 void solve() {
-    ll n, x;
-    cin >> n >> x;
-    vector<ll> h(n, 0), s(n, 0);
-    for (int i = 0; i < n; i++) cin >> h[i];
-    for (int i = 0; i < n; i++) cin >> s[i];
+    int n; cin >> n;
+    int k; cin >> k;
+    vector<ll> a(n, 0);
+    for (int i = 0; i < n; i++) cin >> a[i];
 
-    vector<ll> dp(x + 1, 0);
-    vector<ll> prevdp(x + 1, 0);
-
-    for (int i = n - 1; i >= 0; i--) {
-        for (int amt = 0; amt <= x; amt++) {
-            ll notpick = 0, pick = 0;
-            notpick = prevdp[amt];
-            if (amt - h[i] >= 0) {
-                pick = (s[i] + prevdp[amt - h[i]]);
-            }
-            dp[amt] = max(pick, notpick);
-        }
-        swap(dp, prevdp);
+    unordered_map<int, int, custom_hash> mp;
+    for (int i = 0; i < k; i++) {
+        mp[a[i]]++;
     }
 
-    cout << prevdp[x];
+    int unq = mp.size();
+    cout << unq << " ";
+
+    for (int l = 0, r = k; r < n; r++, l++) {
+        mp[a[l]]--;
+        if (mp[a[l]] == 0) unq--;
+
+        mp[a[r]]++;
+        if (mp[a[r]] == 1) unq++;
+
+        cout << unq << " ";
+    }
+
 }
+
 
 /* Main()  function */
 int main() {

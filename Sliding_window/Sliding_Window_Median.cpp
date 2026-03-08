@@ -3,6 +3,14 @@ using namespace std;
 #define ll long long
 const ll MOD = 1e9 + 7;
 
+
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template <class T>
+using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+
 // CUSTOM HASH
 // unordered_map<int, int, custom_hash> mp;
 // unordered_set<int, custom_hash> st;
@@ -20,30 +28,28 @@ struct custom_hash {
     }
 };
 
+
+
 void solve() {
-    ll n, x;
-    cin >> n >> x;
-    vector<ll> h(n, 0), s(n, 0);
-    for (int i = 0; i < n; i++) cin >> h[i];
-    for (int i = 0; i < n; i++) cin >> s[i];
+    int n; cin >> n;
+    int k; cin >> k;
+    vector<int> a(n, 0);
+    for (int i = 0; i < n; i++) cin >> a[i];
 
-    vector<ll> dp(x + 1, 0);
-    vector<ll> prevdp(x + 1, 0);
 
-    for (int i = n - 1; i >= 0; i--) {
-        for (int amt = 0; amt <= x; amt++) {
-            ll notpick = 0, pick = 0;
-            notpick = prevdp[amt];
-            if (amt - h[i] >= 0) {
-                pick = (s[i] + prevdp[amt - h[i]]);
-            }
-            dp[amt] = max(pick, notpick);
-        }
-        swap(dp, prevdp);
+    ordered_multiset<int> st;
+    int i = 0;
+    for (int j = 0; j < n; j++) {
+        st.insert(a[j]);
+
+        if (j - i + 1 < k) continue;
+
+        cout << *st.find_by_order((k - 1) / 2) << " ";
+        st.erase(st.find_by_order(st.order_of_key(a[i])));
+        i++;
     }
-
-    cout << prevdp[x];
 }
+
 
 /* Main()  function */
 int main() {

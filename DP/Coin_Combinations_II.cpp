@@ -20,30 +20,41 @@ struct custom_hash {
     }
 };
 
-void solve() {
-    ll n, x;
-    cin >> n >> x;
-    vector<ll> h(n, 0), s(n, 0);
-    for (int i = 0; i < n; i++) cin >> h[i];
-    for (int i = 0; i < n; i++) cin >> s[i];
 
-    vector<ll> dp(x + 1, 0);
-    vector<ll> prevdp(x + 1, 0);
+const ll INF = 1e15;
 
-    for (int i = n - 1; i >= 0; i--) {
-        for (int amt = 0; amt <= x; amt++) {
-            ll notpick = 0, pick = 0;
-            notpick = prevdp[amt];
-            if (amt - h[i] >= 0) {
-                pick = (s[i] + prevdp[amt - h[i]]);
-            }
-            dp[amt] = max(pick, notpick);
-        }
-        swap(dp, prevdp);
+int f(int amt, int j, vector<int>& c) {
+    if (amt == 0) return 1;
+    if (j >= c.size()) return 0;
+
+
+    ll nottake = f(amt, j + 1, c);
+    ll take = 0;
+    if (amt - c[j] >= 0) {
+        take = f(amt - c[j], j, c);
     }
 
-    cout << prevdp[x];
+    return (take + nottake) % MOD;
 }
+
+void solve() {
+    ll n; cin >> n;
+    ll x; cin >> x;
+    vector<int> c(n);
+    for (int i = 0; i < n; i++) cin >> c[i];
+
+    int dp[x + 1];
+    memset(dp, 0, sizeof(dp));
+    dp[0] = 1;
+    for (int& coin : c) {
+        for (int i = coin; i <= x; i++) {
+            dp[i] = (dp[i] + dp[i - coin]) % MOD;
+        }
+    }
+
+    cout << dp[x];
+}
+
 
 /* Main()  function */
 int main() {

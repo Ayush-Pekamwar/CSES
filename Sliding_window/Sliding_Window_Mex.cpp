@@ -20,30 +20,46 @@ struct custom_hash {
     }
 };
 
+
 void solve() {
-    ll n, x;
-    cin >> n >> x;
-    vector<ll> h(n, 0), s(n, 0);
-    for (int i = 0; i < n; i++) cin >> h[i];
-    for (int i = 0; i < n; i++) cin >> s[i];
+    int n; cin >> n;
+    int k; cin >> k;
+    vector<int> a(n, 0);
+    for (int i = 0; i < n; i++) cin >> a[i];
 
-    vector<ll> dp(x + 1, 0);
-    vector<ll> prevdp(x + 1, 0);
-
-    for (int i = n - 1; i >= 0; i--) {
-        for (int amt = 0; amt <= x; amt++) {
-            ll notpick = 0, pick = 0;
-            notpick = prevdp[amt];
-            if (amt - h[i] >= 0) {
-                pick = (s[i] + prevdp[amt - h[i]]);
-            }
-            dp[amt] = max(pick, notpick);
-        }
-        swap(dp, prevdp);
+    vector<int> freq(k, 0);
+    set<int> missing;
+    for (int i = 0; i <= k; i++) {
+        missing.insert(i);
     }
 
-    cout << prevdp[x];
+    for (int i = 0; i < k; i++) {
+        if (a[i] >= k) continue;
+        freq[a[i]]++;
+        if (freq[a[i]] == 1) {
+            missing.erase(a[i]);
+        }
+    }
+    cout << *missing.begin() << " ";
+
+    for (int i = k; i < n; i++) {
+        if(a[i] < k){
+            freq[a[i]]++;
+            if (freq[a[i]] == 1) {
+                missing.erase(a[i]);
+            }
+        }
+        if(a[i-k] < k){
+            freq[a[i - k]]--;
+            if (freq[a[i - k]] == 0) {
+                missing.insert(a[i - k]);
+            }
+        }
+        cout << *missing.begin() << " ";
+    }
+
 }
+
 
 /* Main()  function */
 int main() {

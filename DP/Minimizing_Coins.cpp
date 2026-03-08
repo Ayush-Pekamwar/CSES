@@ -20,30 +20,31 @@ struct custom_hash {
     }
 };
 
+
+const int INF = 1e8;
+vector<int> dp;
+
 void solve() {
-    ll n, x;
-    cin >> n >> x;
-    vector<ll> h(n, 0), s(n, 0);
-    for (int i = 0; i < n; i++) cin >> h[i];
-    for (int i = 0; i < n; i++) cin >> s[i];
+    int n; cin >> n;
+    int x; cin >> x;
+    vector<int> c(n);
+    for (int i = 0; i < n; i++) cin >> c[i];
 
-    vector<ll> dp(x + 1, 0);
-    vector<ll> prevdp(x + 1, 0);
-
-    for (int i = n - 1; i >= 0; i--) {
-        for (int amt = 0; amt <= x; amt++) {
-            ll notpick = 0, pick = 0;
-            notpick = prevdp[amt];
-            if (amt - h[i] >= 0) {
-                pick = (s[i] + prevdp[amt - h[i]]);
+    dp.assign(x + 1, INF);
+    dp[0] = 0;
+    for (int i = 1; i <= x; i++) {
+        for (auto& coin : c) {
+            if (i - coin >= 0) {
+                dp[i] = min(dp[i], dp[i - coin] + 1);
             }
-            dp[amt] = max(pick, notpick);
         }
-        swap(dp, prevdp);
     }
+    int ans = dp[x];
+    if (ans >= INF) ans = -1;
+    cout << ans;
 
-    cout << prevdp[x];
 }
+
 
 /* Main()  function */
 int main() {
